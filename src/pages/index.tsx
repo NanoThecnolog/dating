@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import localFont from "next/font/local";
 import styles from "@/styles/Home.module.scss";
 import { useRouter } from "next/router";
@@ -29,10 +28,9 @@ const options = {
 
 export default function Home() {
   const router = useRouter();
-  const [email, setEmail] = useState('contato@ericssongomes.com');
+  const email = 'contato@ericssongomes.com';
   const subject = 'Ela Aceitou!';
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState('')
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({
     data: new Date(),
@@ -42,16 +40,12 @@ export default function Home() {
   })
 
   useEffect(() => {
-    if (!answers.data && !answers.horario && !answers.oQueComer && !answers.oQueFazer) {
-      alert("Esqueceu de alguma coisa")
-      return
-    }
     if (step === 3) {
       const messageText = `Ela aceitou! Quando: ${answers.data.toLocaleDateString('pt-br', { timeZone: 'UTC' })}, ${answers.horario}. O que ela quer fazer: ${answers.oQueFazer}. O que ela quer comer: ${answers.oQueComer}. Do your jumps!`;
       setMessage(messageText)
     }
   }, [step])
-  function handleChange(question: keyof AnswersProps, value: any) {
+  function handleChange(question: keyof AnswersProps, value: string) {
     const updatedValue = question === 'data' ? new Date(value) : value
     setAnswers((prev) => ({ ...prev, [question]: updatedValue }))
   }
@@ -60,8 +54,6 @@ export default function Home() {
 
   async function confirmAnswers(e: MouseEvent<HTMLButtonElement>): Promise<void> {
     e.preventDefault();
-    setStatus('Enviando...')
-
     try {
       const res = await fetch('/api/sendEmail', {
         method: 'POST',
@@ -69,16 +61,13 @@ export default function Home() {
         body: JSON.stringify({ to: email, subject, text: message })
       })
       if (res.ok) {
-        setStatus('Email enviado!')
         console.log('email enviado')
         router.push('/confirmation')
       } else {
-        setStatus('Erro ao enviar email')
         console.log("Erro ao enviar email")
       }
     } catch (err) {
       console.log('Erro: ', err)
-      setStatus('Erro ao enviar email')
     }
   }
 

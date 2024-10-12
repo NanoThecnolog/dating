@@ -2,16 +2,14 @@ import { AnswersProps } from "@/types/AnswersProps"
 import styles from './styles.module.scss'
 
 interface WhenProps {
-    handleChange: (question: keyof AnswersProps, value: any) => void
+    handleChange: (question: keyof AnswersProps, value: string) => void
     nextStep: () => void
     //options: OptionsProps
     answers: AnswersProps
 }
 
 export default function When({ handleChange, nextStep, answers }: WhenProps) {
-    function getDate() {
 
-    }
     return (
         <div className={styles.container}>
             <h2>Quando você quer sair?</h2>
